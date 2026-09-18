@@ -1,0 +1,239 @@
+.composer-wrap {
+  width: min(100%, 1000px);
+  padding: 16px 36px 20px;
+  margin: 0 auto;
+  flex: 0 0 auto;
+}
+
+.agent-tray {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 0 2px;
+}
+
+.tray-label {
+  margin-right: 6px;
+  color: #6a786e;
+  font-family: 'DM Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.agent-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 7px;
+  padding: 5px 11px;
+  background: #111713;
+  border: 1px solid #233025;
+  color: #92a095;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.agent-chip:hover {
+  border-color: #3f543c;
+  color: #e4eee3;
+  background: #17211a;
+}
+
+.agent-chip.selected {
+  border-color: #d4fb4b;
+  background: #1a2717;
+  color: #f2fadc;
+  box-shadow: 0 0 14px rgba(219, 255, 77, 0.12);
+}
+
+.agent-chip span {
+  color: #dbff4d;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #29382b;
+  border-radius: 14px;
+  padding: 14px 16px 10px;
+  background: #121814;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.composer:focus-within {
+  border-color: #79993e;
+  box-shadow: 0 0 0 3px rgba(219, 255, 77, 0.1), 0 16px 45px rgba(0, 0, 0, 0.45);
+}
+
+.attached-file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  margin-bottom: 10px;
+  padding: 5px 11px;
+  background: #19271c;
+  border: 1px solid #364d36;
+  border-radius: 8px;
+  color: #e3ede1;
+  font-size: 12px;
+  max-width: 100%;
+}
+
+.attached-file-chip .file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
+}
+
+.remove-file-btn {
+  background: none;
+  border: none;
+  color: #9cb09b;
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 12px;
+  line-height: 1;
+  transition: color 0.14s ease;
+}
+
+.remove-file-btn:hover {
+  color: #ff7866;
+}
+
+.composer textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f3f7f2;
+  min-height: 54px;
+  max-height: 180px;
+  padding: 4px 0;
+  font-size: 14px;
+  line-height: 1.55;
+  overflow-y: hidden;
+  resize: none;
+  scrollbar-width: none;
+}
+
+.composer textarea::placeholder {
+  color: #5d6a60;
+}
+
+.composer textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.composer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.attach-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #18221a;
+  border: 1px solid #2a3b2c;
+  border-radius: 7px;
+  padding: 5px 11px;
+  color: #a8bba5;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.attach-button:hover {
+  background: #202d23;
+  border-color: #48634a;
+  color: #e2f0e0;
+}
+
+.disclaimer {
+  color: #59665c;
+  font-size: 11px;
+}
+
+.send-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 700;
+  border: none;
+  background: #dbff4d;
+  color: #0c120a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(219, 255, 77, 0.2);
+  transition: transform 0.16s ease, background 0.16s ease, opacity 0.16s ease;
+}
+
+.send-button:not(:disabled):hover {
+  background: #eaff7b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(219, 255, 77, 0.35);
+}
+
+.send-button:disabled {
+  background: #253320;
+  color: #556852;
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.error-banner {
+  margin-bottom: 10px;
+  border-left: 2px solid #ff7866;
+  border-radius: 4px;
+  padding: 8px 12px;
+  background: #251614;
+  color: #ffaba0;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .composer-wrap {
+    width: 100%;
+    padding: 12px 14px 14px;
+  }
+
+  .composer {
+    border-radius: 12px;
+    padding: 10px 12px 8px;
+  }
+
+  .composer textarea {
+    min-height: 48px;
+    max-height: 130px;
+  }
+
+  .attach-label {
+    display: none;
+  }
+
+  .disclaimer {
+    display: none;
+  }
+}
