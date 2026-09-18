@@ -195,15 +195,15 @@ const Sidebar = ({
             </div>
           )}
 
-          <div
-            className="profile-row"
-            role="button"
-            tabIndex={0}
-            onClick={() => setShowUserMenu((prev) => !prev)}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setShowUserMenu((prev) => !prev) }}
-            title="Account options"
-          >
-            <div className="avatar">
+          <div className="profile-row">
+            <div
+              className="avatar"
+              role="button"
+              tabIndex={0}
+              onClick={() => setShowUserMenu((prev) => !prev)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setShowUserMenu((prev) => !prev) }}
+              title="Account options"
+            >
               {avatarUrl && !avatarError ? (
                 <img src={avatarUrl} alt={displayName} className="avatar-img" onError={() => setAvatarError(true)} />
               ) : (
@@ -211,23 +211,39 @@ const Sidebar = ({
               )}
             </div>
             {!isCollapsed && (
-              <div className="profile-info">
+              <div
+                className="profile-info"
+                role="button"
+                tabIndex={0}
+                onClick={() => setShowUserMenu((prev) => !prev)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setShowUserMenu((prev) => !prev) }}
+                title="Account options"
+              >
                 <strong>{displayName}</strong>
                 <small>{userEmail}</small>
               </div>
             )}
             {!isCollapsed && (
               <button
-                className={`more-button ${showUserMenu ? 'active' : ''}`}
+                className="sidebar-logout-btn"
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setShowUserMenu((prev) => !prev)
-                }}
-                title="Account options"
-                aria-label="More profile options"
+                onClick={onLogout}
+                title="Log out"
+                aria-label="Log out"
               >
-                •••
+                <span className="logout-icon">🚪</span>
+                <span>Log out</span>
+              </button>
+            )}
+            {isCollapsed && (
+              <button
+                className="sidebar-logout-btn-collapsed"
+                type="button"
+                onClick={onLogout}
+                title="Log out"
+                aria-label="Log out"
+              >
+                🚪
               </button>
             )}
           </div>
