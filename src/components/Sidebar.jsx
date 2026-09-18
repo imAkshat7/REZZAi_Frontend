@@ -27,6 +27,29 @@ const Sidebar = ({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Auto-close on resize to desktop & handle Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileOpen) {
+        onCloseMobile?.()
+      }
+    }
+    const handleResize = () => {
+      if (window.innerWidth > 768 && mobileOpen) {
+        onCloseMobile?.()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [mobileOpen, onCloseMobile])
+
+  // In mobile view, the sidebar is an off-canvas drawer and should never be in 72px collapsed mode
+  const isCollapsed = collapsed && !mobileOpen
+
   const initialLetter = (user?.name || user?.email || 'User')[0].toUpperCase()
   const displayName = user?.name || user?.email?.split('@')[0] || 'My workspace'
   const userEmail = user?.email || 'Personal plan'
@@ -40,18 +63,21 @@ const Sidebar = ({
           onClick={onCloseMobile}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') onCloseMobile() }}
+          aria-label="Close sidebar overlay"
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') onCloseMobile?.() }}
         />
       )}
 
-      <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
+      <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-head">
           <a className="brand" href="/" aria-label="REZZAi home">
             <span className="brand-mark">
               <img src="/logo.png" alt="REZZAi" className="brand-logo-img" />
             </span>
-            {!collapsed && <span>REZZAi</span>}
+            {!isCollapsed && <span>REZZAi</span>}
           </a>
+
+          {/* Desktop collapse button */}
           <button
             className="icon-button collapse-btn"
             type="button"
@@ -61,16 +87,35 @@ const Sidebar = ({
           >
             {collapsed ? '›' : '‹'}
           </button>
+
+          {/* Mobile close button */}
+          <button
+            className="icon-button mobile-close-btn"
+            type="button"
+            onClick={onCloseMobile}
+            title="Close sidebar"
+            aria-label="Close sidebar"
+          >
+            ✕
+          </button>
         </div>
 
-        <button className="new-chat" type="button" onClick={onNewChat} title="Create new chat">
+        <button
+          className="new-chat"
+          type="button"
+          onClick={() => {
+            onNewChat()
+            if (mobileOpen) onCloseMobile?.()
+          }}
+          title="Create new chat"
+        >
           <span>＋</span>
-          {!collapsed && <span>New chat</span>}
-          {!collapsed && <kbd>⌘ K</kbd>}
+          {!isCollapsed && <span>New chat</span>}
+          {!isCollapsed && !mobileOpen && <kbd>⌘ K</kbd>}
         </button>
 
         <div className="history-section">
-          {!collapsed && (
+          {!isCollapsed && (
             <div className="section-label">
               <span>Recent chats</span>
               <span>{conversations.length}</span>
@@ -79,7 +124,7 @@ const Sidebar = ({
           <div className="conversation-list">
             {loadingHistory && <p className="empty-note">Loading your space...</p>}
             {!loadingHistory && conversations.length === 0 && (
-              <p className="empty-note">{collapsed ? '...' : 'Your conversations will appear here.'}</p>
+              <p className="empty-note">{isCollapsed ? '...' : 'Your conversations will appear here.'}</p>
             )}
             {conversations.map((conversation) => (
               <div
@@ -91,20 +136,23 @@ const Sidebar = ({
                   type="button"
                   onClick={() => {
                     onSelectConversation(conversation)
-                    if (mobileOpen) onCloseMobile()
+                    if (mobileOpen) onCloseMobile?.()
                   }}
                   title={conversation.title || 'Untitled conversation'}
                 >
                   <span className="conversation-dot" />
-                  {!collapsed && <span>{conversation.title || 'Untitled conversation'}</span>}
+                  {!isCollapsed && <span>{conversation.title || 'Untitled conversation'}</span>}
                 </button>
-                {!collapsed && (
+                {!isCollapsed && (
                   <button
                     className="delete-conversation"
                     type="button"
                     title="Delete conversation"
                     aria-label={`Delete ${conversation.title || 'conversation'}`}
-                    onClick={() => onDeleteConversation(conversation)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onDeleteConversation(conversation)
+                    }}
                   >
                     ×
                   </button>
@@ -162,13 +210,13 @@ const Sidebar = ({
                 initialLetter
               )}
             </div>
-            {!collapsed && (
+            {!isCollapsed && (
               <div className="profile-info">
                 <strong>{displayName}</strong>
                 <small>{userEmail}</small>
               </div>
             )}
-            {!collapsed && (
+            {!isCollapsed && (
               <button
                 className={`more-button ${showUserMenu ? 'active' : ''}`}
                 type="button"
