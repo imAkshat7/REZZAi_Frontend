@@ -8,6 +8,10 @@ const AuthPage = ({ onAuthenticated }) => {
   const [error, setError] = useState('')
 
   const signInWithGoogle = async () => {
+    if (!Auth || !googleProvider) {
+      setError('Firebase authentication could not be initialized. Please verify your VITE_FIREBASE_API_KEY.')
+      return
+    }
     setIsSigningIn(true)
     setError('')
     try {
