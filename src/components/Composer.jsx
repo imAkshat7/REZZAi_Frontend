@@ -95,9 +95,14 @@ const Composer = ({
           ref={textareaRef}
           value={prompt}
           onChange={(event) => onPromptChange(event.target.value)}
-          placeholder={`Message ${activeAgent.label}...`}
+          placeholder={`Message ${activeAgent?.label || 'Auto'}...`}
           rows="1"
           aria-label="Message input"
+          onFocus={() => {
+            setTimeout(() => {
+              textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+            }, 300)
+          }}
           onKeyDown={(event) => {
             if (event.key === 'Enter' && !event.shiftKey) {
               event.preventDefault()
