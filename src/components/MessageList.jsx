@@ -234,7 +234,7 @@ const MessageList = ({
         <div className="empty-state">
           <div className="empty-state-hero">
             <div className="orbit-mark">
-              <span className="orbit-glyph">✦</span>
+              <img src="/logo.png" alt="REZZAi" className="empty-state-logo" />
             </div>
             <p className="eyebrow">Personal Intelligence Workspace</p>
             <h2>

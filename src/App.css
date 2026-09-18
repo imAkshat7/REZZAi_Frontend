@@ -138,16 +138,37 @@ button {
 
 .brand-mark {
   display: grid;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   place-items: center;
-  border: 1px solid #dbff4d;
-  border-radius: 6px;
-  color: #dbff4d;
-  background: #192514;
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  box-shadow: 0 0 14px rgba(219, 255, 77, 0.18);
+  border: 1px solid rgba(219, 255, 77, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000000;
+  box-shadow: 0 0 16px rgba(219, 255, 77, 0.22);
+}
+
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.empty-state-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+.auth-orbit-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
 }
 
 .collapse-btn {
@@ -623,16 +644,15 @@ button {
 
 .orbit-mark {
   display: grid;
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   margin-bottom: 22px;
   place-items: center;
-  border: 1px solid rgba(219, 255, 77, 0.4);
-  border-radius: 50%;
-  color: #dbff4d;
-  font-size: 20px;
-  background: #141f12;
-  box-shadow: 0 0 35px rgba(219, 255, 77, 0.16);
+  border: 1px solid rgba(219, 255, 77, 0.45);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000000;
+  box-shadow: 0 0 35px rgba(219, 255, 77, 0.22);
   animation: pulse 3s infinite ease-in-out;
 }
 
@@ -970,15 +990,15 @@ button {
 
 .auth-orbit {
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   margin-bottom: 22px;
   place-items: center;
-  border: 1px solid rgba(219, 255, 77, 0.3);
-  border-radius: 50%;
-  color: #dbff4d;
-  background: #172414;
-  font-size: 18px;
+  border: 1px solid rgba(219, 255, 77, 0.4);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000000;
+  box-shadow: 0 0 25px rgba(219, 255, 77, 0.18);
 }
 
 .auth-card-kicker {

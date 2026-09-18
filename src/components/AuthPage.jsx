@@ -30,10 +30,36 @@ const AuthPage = ({ onAuthenticated }) => {
   return (
     <main className="auth-page">
       <div className="auth-noise" />
-      <nav className="auth-nav"><a className="brand" href="/" aria-label="REZZAi home"><span className="brand-mark">R</span><span>REZZAi</span></a><span className="auth-nav-note">Private intelligence workspace</span></nav>
+      <nav className="auth-nav">
+        <a className="brand" href="/" aria-label="REZZAi home">
+          <span className="brand-mark">
+            <img src="/logo.png" alt="REZZAi" className="brand-logo-img" />
+          </span>
+          <span>REZZAi</span>
+        </a>
+        <span className="auth-nav-note">Private intelligence workspace</span>
+      </nav>
       <section className="auth-content">
-        <div className="auth-copy"><p className="eyebrow"><span /> Welcome back</p><h1>Make room for<br /><em>better thinking.</em></h1><p>One considered workspace for your questions, projects, research, and next good idea.</p></div>
-        <div className="auth-card"><div className="auth-orbit">✦</div><p className="auth-card-kicker">Your workspace is waiting</p><h2>Sign in to REZZAi</h2><p className="auth-card-copy">Continue with your Google account to access your conversations and agents.</p><button className="google-signin" type="button" onClick={signInWithGoogle} disabled={isSigningIn}><span className="google-glyph">G</span><span>{isSigningIn ? 'Connecting...' : 'Continue with Google'}</span><span className="signin-arrow">→</span></button>{error && <p className="auth-error" role="alert">{error}</p>}<small>Secure sign-in. Your conversations stay in your account.</small></div>
+        <div className="auth-copy">
+          <p className="eyebrow"><span /> Welcome back</p>
+          <h1>Make room for<br /><em>better thinking.</em></h1>
+          <p>One considered workspace for your questions, projects, research, and next good idea.</p>
+        </div>
+        <div className="auth-card">
+          <div className="auth-orbit">
+            <img src="/logo.png" alt="REZZAi" className="auth-orbit-logo" />
+          </div>
+          <p className="auth-card-kicker">Your workspace is waiting</p>
+          <h2>Sign in to REZZAi</h2>
+          <p className="auth-card-copy">Continue with your Google account to access your conversations and agents.</p>
+          <button className="google-signin" type="button" onClick={signInWithGoogle} disabled={isSigningIn}>
+            <span className="google-glyph">G</span>
+            <span>{isSigningIn ? 'Connecting...' : 'Continue with Google'}</span>
+            <span className="signin-arrow">→</span>
+          </button>
+          {error && <p className="auth-error" role="alert">{error}</p>}
+          <small>Secure sign-in. Your conversations stay in your account.</small>
+        </div>
       </section>
       <footer className="auth-footer"><span>REZZAi / 2026</span><span>Think clearly. Move deliberately.</span></footer>
     </main>

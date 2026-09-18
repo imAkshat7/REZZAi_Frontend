@@ -47,7 +47,9 @@ const Sidebar = ({
       <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-head">
           <a className="brand" href="/" aria-label="REZZAi home">
-            <span className="brand-mark">R</span>
+            <span className="brand-mark">
+              <img src="/logo.png" alt="REZZAi" className="brand-logo-img" />
+            </span>
             {!collapsed && <span>REZZAi</span>}
           </a>
           <button
