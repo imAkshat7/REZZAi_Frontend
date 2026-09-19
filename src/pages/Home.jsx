@@ -48,6 +48,9 @@ const Home = ({ user, onLogout }) => {
   const [loadingMessages, setLoadingMessages] = useState(false)
 
   const activeConversationRef = useRef(activeConversation)
+  const loadedConversationIdRef = useRef(null)
+  const activeConversationId = activeConversation?._id
+
   useEffect(() => {
     activeConversationRef.current = activeConversation
   }, [activeConversation])
@@ -67,9 +70,9 @@ const Home = ({ user, onLogout }) => {
     }
   }
 
-  const loadMessages = async (conversationId) => {
+  const loadMessages = async (conversationId, { silent = false } = {}) => {
     try {
-      setLoadingMessages(true)
+      if (!silent) setLoadingMessages(true)
       const fetchedMessages = await api(`/chat/conversations/${conversationId}/messages`)
       if (activeConversationRef.current?._id === conversationId) {
         setMessages(fetchedMessages)
@@ -81,7 +84,7 @@ const Home = ({ user, onLogout }) => {
       }
       return []
     } finally {
-      setLoadingMessages(false)
+      if (!silent) setLoadingMessages(false)
     }
   }
 
@@ -91,20 +94,26 @@ const Home = ({ user, onLogout }) => {
   }, [])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (activeConversation?._id) loadMessages(activeConversation._id)
-      else {
-        setMessages([])
-        setActiveArtifact(null)
-        setLoadingMessages(false)
-      }
-    }, 0)
-    return () => clearTimeout(timer)
-  }, [activeConversation])
+    if (!activeConversationId) {
+      loadedConversationIdRef.current = null
+      setMessages([])
+      setActiveArtifact(null)
+      setLoadingMessages(false)
+      return
+    }
+
+    if (loadedConversationIdRef.current === activeConversationId) {
+      return
+    }
+
+    loadedConversationIdRef.current = activeConversationId
+    loadMessages(activeConversationId)
+  }, [activeConversationId])
 
   const createConversation = async () => {
     try {
       const conversation = await api('/chat/conversations', { method: 'POST', body: JSON.stringify({ title: 'New conversation' }) })
+      loadedConversationIdRef.current = conversation._id
       setConversations((current) => [conversation, ...current])
       setActiveConversation(conversation)
       setMessages([])
@@ -124,9 +133,16 @@ const Home = ({ user, onLogout }) => {
       const remaining = conversations.filter((item) => item._id !== conversation._id)
       setConversations(remaining)
       if (activeConversation?._id === conversation._id) {
-        setActiveConversation(remaining[0] || null)
-        setMessages([])
+        const nextActive = remaining[0] || null
+        loadedConversationIdRef.current = nextActive?._id || null
+        setActiveConversation(nextActive)
         setActiveArtifact(null)
+        setMessages([])
+        if (nextActive) {
+          loadMessages(nextActive._id)
+        } else {
+          setLoadingMessages(false)
+        }
       }
       setConversationToDelete(null)
     } catch (deleteError) {
@@ -149,11 +165,13 @@ const Home = ({ user, onLogout }) => {
     try {
       if (!conversation) {
         conversation = await api('/chat/conversations', { method: 'POST', body: JSON.stringify({ title: 'New conversation' }) })
+        loadedConversationIdRef.current = conversation._id
         setConversations((current) => [conversation, ...current])
         setActiveConversation(conversation)
       }
 
       const targetConvId = conversation._id
+      loadedConversationIdRef.current = targetConvId
       setGeneratingConversationId(targetConvId)
 
       const isFullWebApp = isFullWebAppRequest(content)
@@ -208,14 +226,22 @@ const Home = ({ user, onLogout }) => {
         body: reqBody
       })
 
-      const updatedMessages = await loadMessages(targetConvId)
+      const updatedMessages = await loadMessages(targetConvId, { silent: true })
 
       if (!result.content) throw new Error('The agent returned no response')
 
       const isStillActive = activeConversationRef.current?._id === targetConvId
 
+      if (isStillActive && (!updatedMessages || !updatedMessages.some((m) => m.role === 'assistant'))) {
+        setMessages((current) => [
+          ...current.filter((m) => !m.pending),
+          { content, role: 'user' },
+          { content: result.content, role: 'assistant', images: result.images || [] }
+        ])
+      }
+
       if (isPpt && isStillActive) {
-        const lastMsg = [...updatedMessages].reverse().find((m) => m.role === 'assistant' && getPptArtifact(m.content))
+        const lastMsg = [...(updatedMessages || [])].reverse().find((m) => m.role === 'assistant' && getPptArtifact(m.content))
         if (lastMsg) {
           const pptArtifact = getPptArtifact(lastMsg.content)
           setActiveArtifact({ id: lastMsg._id, ...pptArtifact })
@@ -223,7 +249,7 @@ const Home = ({ user, onLogout }) => {
           setActiveArtifact(null)
         }
       } else if (isPdf && isStillActive) {
-        const lastMsg = [...updatedMessages].reverse().find((m) => m.role === 'assistant' && getPdfArtifact(m.content))
+        const lastMsg = [...(updatedMessages || [])].reverse().find((m) => m.role === 'assistant' && getPdfArtifact(m.content))
         if (lastMsg) {
           const pdfArtifact = getPdfArtifact(lastMsg.content)
           setActiveArtifact({ id: lastMsg._id, ...pdfArtifact })
@@ -231,7 +257,7 @@ const Home = ({ user, onLogout }) => {
           setActiveArtifact(null)
         }
       } else if (isFullWebApp && isStillActive) {
-        const lastMsg = [...updatedMessages].reverse().find((m) => m.role === 'assistant' && getGeneratedFiles(m.content))
+        const lastMsg = [...(updatedMessages || [])].reverse().find((m) => m.role === 'assistant' && getGeneratedFiles(m.content))
         if (lastMsg) {
           const files = getGeneratedFiles(lastMsg.content)
           setActiveArtifact({ id: lastMsg._id, files })
@@ -276,10 +302,11 @@ const Home = ({ user, onLogout }) => {
         onNewChat={createConversation}
         onSelectConversation={(conv) => {
           if (activeConversation?._id !== conv._id) {
+            loadedConversationIdRef.current = conv._id
             setActiveConversation(conv)
             setActiveArtifact(null)
             setMessages([])
-            setLoadingMessages(true)
+            loadMessages(conv._id)
           }
           if (mobileSidebarOpen) setMobileSidebarOpen(false)
         }}

@@ -349,7 +349,7 @@ const MessageList = ({
           )
         })
       )}
-      {loading && (
+      {loading && !loadingMessages && (
         <div className="typing">
           <div className="typing-dots-pulse">
             <span />
